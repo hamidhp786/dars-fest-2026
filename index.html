@@ -68,7 +68,7 @@
     <!-- Photo Gallery Section -->
     <div class="card">
       <h2>📸 Photo Gallery</h2>
-      <p style="font-size: 13px; color: #666;">ഫോട്ടോകൾ അപ്‌ലോഡ് ചെയ്യാൻ ImgBB (imgbb.com) പോലെയുള്ള Free Hosting ഉപയോഗിച്ച് ലിങ്ക് താഴെ നൽകാം.</p>
+      <p style="font-size: 13px; color: #666;">ഫോട്ടോകൾ അപ്‌ലോഡ് ചെയ്യാൻ ImgBB പോലെയുള്ള Free Hosting ഉപയോഗിച്ച് ലിങ്ക് താഴെ നൽകാം.</p>
       <div class="gallery-grid">
         <img src="https://via.placeholder.com/150" alt="Fest Photo">
         <img src="https://via.placeholder.com/150" alt="Fest Photo">
@@ -78,7 +78,6 @@
   </div>
 
   <script>
-    // Correct Sheet ID
     const SHEET_ID = '1MlKLHMU-OuRfTTfnt4q1H_LG4hnEqdrPHtw0GGIBJrE';
 
     // Fetch Leaderboard Data
@@ -86,19 +85,28 @@
     fetch(leaderboardUrl)
       .then(res => res.text())
       .then(data => {
-        const json = JSON.parse(data.substring(47, data.length - 2));
+        // Cleaning response data
+        const jsonString = data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1);
+        const json = JSON.parse(jsonString);
         const rows = json.table.rows;
         let html = '';
+        
         rows.forEach((row) => {
+          if (!row.c || !row.c[0]) return;
           const team = row.c[0] ? row.c[0].v : '-';
           const points = row.c[1] ? row.c[1].v : '0';
           const rank = row.c[2] ? row.c[2].v : '-';
-          html += `<tr><td><b>${team}</b></td><td>${points}</td><td>${rank}</td></tr>`;
+          
+          // Header വരി ഡാറ്റയായി വരാതിരിക്കാൻ
+          if (team !== 'Team Name') {
+            html += `<tr><td><b>${team}</b></td><td>${points}</td><td>${rank}</td></tr>`;
+          }
         });
-        document.getElementById('leaderboard-body').innerHTML = html || '<tr><td colspan="3">Data Not Found</td></tr>';
+        document.getElementById('leaderboard-body').innerHTML = html || '<tr><td colspan="3">No data available</td></tr>';
       })
-      .catch(() => {
-        document.getElementById('leaderboard-body').innerHTML = '<tr><td colspan="3">Error loading data</td></tr>';
+      .catch((err) => {
+        console.error(err);
+        document.getElementById('leaderboard-body').innerHTML = '<tr><td colspan="3">Error loading data. Check console.</td></tr>';
       });
 
     // Fetch Results Data
@@ -106,20 +114,27 @@
     fetch(resultsUrl)
       .then(res => res.text())
       .then(data => {
-        const json = JSON.parse(data.substring(47, data.length - 2));
+        const jsonString = data.substring(data.indexOf('{'), data.lastIndexOf('}') + 1);
+        const json = JSON.parse(jsonString);
         const rows = json.table.rows;
         let html = '';
+        
         rows.forEach((row) => {
+          if (!row.c || !row.c[0]) return;
           const item = row.c[0] ? row.c[0].v : '-';
           const first = row.c[1] ? row.c[1].v : '-';
           const second = row.c[2] ? row.c[2].v : '-';
           const third = row.c[3] ? row.c[3].v : '-';
-          html += `<tr><td><b>${item}</b></td><td>${first}</td><td>${second}</td><td>${third}</td></tr>`;
+          
+          if (item !== 'Item') {
+            html += `<tr><td><b>${item}</b></td><td>${first}</td><td>${second}</td><td>${third}</td></tr>`;
+          }
         });
-        document.getElementById('results-body').innerHTML = html || '<tr><td colspan="4">Data Not Found</td></tr>';
+        document.getElementById('results-body').innerHTML = html || '<tr><td colspan="4">No results available</td></tr>';
       })
-      .catch(() => {
-        document.getElementById('results-body').innerHTML = '<tr><td colspan="4">Error loading data</td></tr>';
+      .catch((err) => {
+        console.error(err);
+        document.getElementById('results-body').innerHTML = '<tr><td colspan="4">No results added yet</td></tr>';
       });
   </script>
 
