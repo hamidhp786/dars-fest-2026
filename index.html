@@ -70,7 +70,6 @@
       <h2>📸 Photo Gallery</h2>
       <p style="font-size: 13px; color: #666;">ഫോട്ടോകൾ അപ്‌ലോഡ് ചെയ്യാൻ ImgBB (imgbb.com) പോലെയുള്ള Free Hosting ഉപയോഗിച്ച് ലിങ്ക് താഴെ നൽകാം.</p>
       <div class="gallery-grid">
-        <!-- നിങ്ങളുടെ ചിത്രങ്ങളുടെ Direct Link ചേർക്കുക -->
         <img src="https://via.placeholder.com/150" alt="Fest Photo">
         <img src="https://via.placeholder.com/150" alt="Fest Photo">
       </div>
@@ -79,19 +78,18 @@
   </div>
 
   <script>
-    // 🔴 നിങ്ങളുടെ Google Sheet ID ഇവിടെ നൽകുക 🔴
-    const SHEET_ID = 'docs.google.com/spreadsheets/d/1MlKLHMU-OuRfTTfnt4q1H_LG4hnEqdrPHtw0GGIBJrE';
+    // Correct Sheet ID
+    const SHEET_ID = '1MlKLHMU-OuRfTTfnt4q1H_LG4hnEqdrPHtw0GGIBJrE';
 
     // Fetch Leaderboard Data
-    const leaderboardUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`;
+    const leaderboardUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Leaderboard`;
     fetch(leaderboardUrl)
       .then(res => res.text())
       .then(data => {
         const json = JSON.parse(data.substring(47, data.length - 2));
         const rows = json.table.rows;
         let html = '';
-        rows.forEach((row, index) => {
-          if (index === 0) return; // Skip Header
+        rows.forEach((row) => {
           const team = row.c[0] ? row.c[0].v : '-';
           const points = row.c[1] ? row.c[1].v : '0';
           const rank = row.c[2] ? row.c[2].v : '-';
@@ -111,8 +109,7 @@
         const json = JSON.parse(data.substring(47, data.length - 2));
         const rows = json.table.rows;
         let html = '';
-        rows.forEach((row, index) => {
-          if (index === 0) return; // Skip Header
+        rows.forEach((row) => {
           const item = row.c[0] ? row.c[0].v : '-';
           const first = row.c[1] ? row.c[1].v : '-';
           const second = row.c[2] ? row.c[2].v : '-';
